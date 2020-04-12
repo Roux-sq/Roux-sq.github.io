@@ -1,102 +1,627 @@
-const { Component } = require('inferno');
-const Head = require('./common/head');
-const Navbar = require('./common/navbar');
-const Widgets = require('./common/widgets');
-const Footer = require('./common/footer');
-const Scripts = require('./common/scripts');
-const Search = require('./common/search');
-const classname = require('./util/classname');
+<!DOCTYPE html>
 
-module.exports = class extends Component {
-    render() {
-        const { env, site, config, page, helper, body } = this.props;
-        const { my_cdn, url_for } = helper;
-        const { comment, use_pjax } = config;
-        // 默认不加载公式，文中头部开启mathJax:true才加载
-        var isMath = page.mathJax != undefined && page.mathJax;
-        const hasGitalk = !(comment == undefined || comment.type == undefined || comment.type == 'undefined' || comment.type != 'gitalk'
-            || (!comment.has_hot_recommend && !comment.has_latest_comment));
 
-        // =====index hot_recommend
-        var hotRecommendStr =
-            "<div class=\"card widget\">" +
-            "   <div class=\"card-content\">" +
-            "       <h3 class=\"menu-label\">热门推荐</h3><span id=\"index_hot_div\">加载中，稍等几秒...</span>" +
-            "   </div>" +
-            "</div>";
+<html lang="en" >
 
-        var pjaxJs = `var pjax = new Pjax({
-            elements: "a",//代表点击链接就更新
-            selectors: [  //代表要更新的节点
-                ".section",
-                "title"
-            ],
-            cache: true,
-            cacheBust:false
-        })
 
-        function loadBusuanzi(){
-        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js", function () {});
-        }
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    树链剖分学习笔记 |  Hexo
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
 
-        // 开始 PJAX 执行的函数
-        document.addEventListener('pjax:send', function () {
-        });
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-树链剖分学习笔记" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  树链剖分学习笔记
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/04/12/%E6%A0%91%E9%93%BE%E5%89%96%E5%88%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-date">
+  <time datetime="2020-04-11T16:00:00.000Z" itemprop="datePublished">2020-04-12</time>
+</a>
+      
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">14 min</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <h1 id="树链剖分学习笔记"><a href="#树链剖分学习笔记" class="headerlink" title="树链剖分学习笔记"></a>树链剖分学习笔记</h1><p>树链剖分是一种解决树上操作问题的有力工具，其本质思想是把树上问题转化为序列问题，再套用序列的数据结构（如线段树，树状数组）进行解决。<br><a id="more"></a></p>
+<h3 id="1-预处理"><a href="#1-预处理" class="headerlink" title="1.预处理"></a>1.预处理</h3><p>树剖的预处理主要由两次<code>dfs</code>组成</p>
+<p>先定义一些东西：</p>
+<blockquote>
+<p>1.一个非叶子节点的重儿子指的是：该节点所有儿子中，子树大小最大的那个儿子的编号。</p>
+<p>2.重边指的是：任意一个非叶子节点连向其<strong>重儿子</strong>的边</p>
+<p>3.轻边是除了重边外的所有边</p>
+<p>4.一条或多条重边相连，组成<strong>重链</strong>，特别的，一个节点也是一条重链</p>
+</blockquote>
+<p>例如以下这棵树：<img src="https://cdn.luogu.com.cn/upload/image_hosting/5xmdrn1b.png?x-oss-process=image/resize,m_lfit,h_340,w_450" alt=""></p>
+<p>我们可以着重画出它的重边：<img src="https://cdn.luogu.com.cn/upload/image_hosting/9oyusxeq.png?x-oss-process=image/resize,m_lfit,h_340,w_450" alt=""></p>
+<p>那么在这棵树中，有$5$条重链，分别为：</p>
+<script type="math/tex; mode=display">
+(1-8),(5-5),(9-9),(3-10),(4-4)</script><p>这些东西有什么用呢？这些东西有一些很好的性质，可以帮助我们完成从树上问题到序列问题的转化。</p>
+<blockquote>
+<p>性质$1$：如果边$(u,v)$是轻边，那么$\operatorname{size}(v)\le\operatorname{size}(u)/2$</p>
+<p>证明：可以反证，若存在一条轻边$(u,v)$使$\operatorname{size}(v)&gt;\operatorname{size}(u)/2$成立，那么$\operatorname{size}(v)$肯定是$u$所有儿子中最大的，那么$(u,v)$就应该是重边，于假设不符。</p>
+<p>性质$2$：在一棵有$n$个节点的树中，根节点到任一节点$v$的路径上，至多存在$\log n$条轻边</p>
+<p>证明：显然在$v$为叶子节点时，可以经过的轻边最多，那么根据性质$1$可以知道，从根节点每往下走一层，若走的是轻边的话，<strong>该子树的$\operatorname{size}$至少会除以2</strong>，所以最多走$\log n$条轻边便会走到叶子节点。</p>
+<p>性质$3$：在一棵有$n$个节点的树中，根节点到任一节点$v$的路径上，至多存在$\log n$条重链</p>
+<p>证明：显然我们可以发现，一条重链的两端肯定是轻边，而轻边最多有$\log n$条，那么重链也最多有$\log n$条</p>
+<p>性质$4$：对于任意两点间的路径$(u,v)$，这条路径上的重链条数是$\log n$级的</p>
+<p>证明：考虑最坏情况，即$\operatorname{lca}(u,v)=root$，那么$u$到根节点的重链条数是$\log n$级的，$v$到根节点的重链条数也是$\log n$级的。所以可以发现对于任意的路径，重链条数均为$\log n$级，这为计算树剖的时间复杂度提供了基础。</p>
+</blockquote>
+<p>再给出一些数组的定义:</p>
+<blockquote>
+<p><code>size[i]</code>表示以$i$为根的子树大小（包括$i$本身</p>
+<p><code>dep[i]</code>表示节点$i$的深度（不妨设根节点的深度为$1$）</p>
+<p><code>fa[i]</code>表示节点$i$的父亲的节点</p>
+<p><code>son[i]</code>表示非叶子节点$i$的的重儿子的编号</p>
+</blockquote>
+<p>第一次<code>dfs</code>就是要求出这些值，以上面那棵树为例,(需要注意的是,第一次<code>dfs</code>对于访问子节点的顺序是无所谓的)</p>
+<p><code>fa[]   = { 0, 0, 1, 1, 1, 2, 2, 3, 6, 6, 7}</code><br><code>dep[]  = {0, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4}</code><br><code>size[] ={0,10, 5, 3, 1, 1, 2, 1, 1, 1, 1}</code><br><code>son[]  = {0, 0, 2, 7, 0, 0, 8,10, 0, 0, 0}</code></p>
+<p>贴上第一次<code>dfs</code>的代码:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> son[N], size[N], dep[N], fa[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs1</span><span class="params">(<span class="keyword">int</span> now, <span class="keyword">int</span> Fa)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> v, Max = <span class="number">-1</span>;</span><br><span class="line">	size[now] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = head[now]; i; i = e[i].nxt)&#123;</span><br><span class="line">		v = e[i].to;</span><br><span class="line">		<span class="keyword">if</span> (v == Fa)<span class="keyword">continue</span>;</span><br><span class="line">		fa[v] = now;</span><br><span class="line">		dep[v] = dep[now] + <span class="number">1</span>;</span><br><span class="line">		dfs1(v, now);</span><br><span class="line">		size[now] += size[v];</span><br><span class="line">		<span class="keyword">if</span> (size[v] &gt; Max)</span><br><span class="line">			Max = size[v], son[now] = v;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>接下来是第二次<code>dfs</code>,完成这次<code>dfs</code>后,便可以实现从树上问题到序列问题的转化了</p>
+<p>还是一样,先知道目前需要计算的几个数组</p>
+<blockquote>
+<p><code>top[i]</code>表示节点$i$所在的<strong>重链的链顶</strong>的编号<br><code>id[i]</code>表示将树转化为序列后,节点$i$的信息保存在下标为<code>id[i]</code>的数据结构(如线段树)中<br><code>bui[i]</code>表示将树转化为序列后的数组</p>
+</blockquote>
+<p>不妨先思考如何计算<code>top[i]</code><br>对于边$(u,v)$,如果这条边是重边,显然$\operatorname{top}(v)=\operatorname{top}(u)$,反之,则$\operatorname{top}(v)=v$(也就是自己是自己这条重链的起点)<br>在进行第二次<code>dfs</code>之前,需要先了解重链剖分是如何<strong>剖</strong>的:</p>
+<blockquote>
+<p>我们需要保证,在转成序列之后,每条重链的序列上都是<strong>连续</strong>的.又根据性质四,我们将树上两点的路径拆成不超过$\log n$条重链,并分别维护,如果维护一条重链的时间复杂度是$\log n$,那么总的时间复杂度便为$\log^2n$</p>
+</blockquote>
+<p>综上所述,为了保证重链的编号连续,我们遍历到每一个非叶子节点时,都要优先遍历其<strong>重儿子</strong><br>所以第二次<code>dfs</code>的代码便得出了(建议结合代码看上面的讲解)<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum, top[N], id[N], input[N], bui[N];<span class="comment">//input[]表示初始输入的点权</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs2</span><span class="params">(<span class="keyword">int</span> now, <span class="keyword">int</span> topnow)</span></span>&#123;</span><br><span class="line">	id[now] = ++sum;</span><br><span class="line">	bui[sum] = input[now];</span><br><span class="line">	top[now] = topnow;</span><br><span class="line">	<span class="keyword">if</span> (!son[now])<span class="keyword">return</span>;</span><br><span class="line">	dfs2(son[now], topnow);</span><br><span class="line">	<span class="keyword">int</span> v;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = head[now]; i; i = e[i].nxt)&#123;</span><br><span class="line">		v = e[i].to;</span><br><span class="line">		<span class="keyword">if</span> (!id[v])</span><br><span class="line">			dfs2(v, v);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><img src="https://cdn.luogu.com.cn/upload/image_hosting/9oyusxeq.png?x-oss-process=image/resize,m_lfit,h_340,w_450" alt=""><br>那么对于前面这棵树,<code>top</code>数组和<code>id</code>数组的计算结果为(由于未给出点权,故只展现这两个数组的计算结果)<br><code>top[] = {0, 1, 1, 3, 4, 5, 1, 3, 1, 9, 3}</code><br><code>id[]  = { 0, 1, 2, 7,10, 6, 3, 8, 4, 5, 9}</code></p>
+<h3 id="2-操作"><a href="#2-操作" class="headerlink" title="2.操作"></a>2.操作</h3><h4 id="有关子树的操作"><a href="#有关子树的操作" class="headerlink" title="有关子树的操作"></a>有关子树的操作</h4><p>这部分的内容相对简单，因为对于一棵子树下的点，他们转到序列上后必然对应着<strong>一段连续的区间</strong>。<br>比如上面那棵树以$2$为根的子树，可以发现$2,6,8,9,5$所对应的的$\operatorname{id}\text{分别为}2,3,4,5,6$，而区间长度自然为$\operatorname{size}(2)=5$，所以每次对于以$i$为根的子树，在序列上所对应的区间为$[\operatorname{id}(i), \operatorname{id}(i)+\operatorname{size}(i))$<br>放代码<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update2</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> z)</span></span>&#123;<span class="comment">//把以x为根的子树的点权全部加z</span></span><br><span class="line">	update(id[x], id[x] + size[x] - <span class="number">1</span>, z);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query2</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;<span class="comment">//查询以x为根的子树的点权和</span></span><br><span class="line">	<span class="keyword">return</span> query(id[x], id[x] + size[x] - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>显然，单次操作的时间复杂度为$\operatorname{O}(\log n)$</p>
+<h4 id="有关树上路径的操作"><a href="#有关树上路径的操作" class="headerlink" title="有关树上路径的操作"></a>有关树上路径的操作</h4><p>这一部分的操作稍为复杂。</p>
+<p>不妨设对边$(u,v)$进行操作。首先考虑一种简单的情况，若这两个点位于同一条重链，那么因为同一重链的点在序列上的编号是连续的，可以直接进行修改。</p>
+<p>更进一步，如果在不同的链上呢？<br><strong>跳到同一条链上就好了啊！</strong><br>我们采用类似倍增求LCA的方法，让两个点不断往上跳，直到跳到同一条重链上，并且边跳边维护。</p>
+<p>以上面那棵树为例，比如说我们要维护路径$(9,7)$，可以看到9的链顶是9,7的链顶是3，由于9比3深，所以我们让9跳（想一想，为什么让链顶深度大的跳）。所以维护的是$[\operatorname{id}(9),\operatorname{id}(9)]$这个区间。<br>跳完后，让9变成它链顶的父节点，也就是6.现在需要维护的是$(6,7)$<br>6的链顶是1，7的链顶是3，3更深，所以维护$[\operatorname{id}(3),\operatorname{id}(7)]$，7变成3 的父节点1。<br>这时，6和1在同一条重链上，直接维护。</p>
+<p>回顾刚才的操作，分析时间复杂度。可以发现决定时间复杂度的是两点间路径所包含的重链的条数。我们已经知道了这个数是$\log n$级的，所以总操作的时间复杂度是$\log ^2n$.<br>放代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update1</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> z)</span></span>&#123;<span class="comment">//将路径(x,y)上的点权全部加z</span></span><br><span class="line">	<span class="keyword">while</span>(top[x] != top[y])&#123;</span><br><span class="line">		<span class="keyword">if</span> (dep[top[x]] &lt; dep[top[y]]) swap(x, y);</span><br><span class="line">		update(id[top[x]], id[x], z);</span><br><span class="line">		x = fa[top[x]];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (dep[x] &gt; dep[y])swap(x, y);</span><br><span class="line">	update(id[x], id[y], z);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query1</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>&#123;<span class="comment">//查询路径(x,y)上的点权和（对p取模）</span></span><br><span class="line">	<span class="keyword">int</span> s = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(top[x] != top[y])&#123;</span><br><span class="line">		<span class="keyword">if</span> (dep[top[x]] &lt; dep[top[y]]) swap(x, y);</span><br><span class="line">		s = (s + query(id[top[x]], id[x])) % p;</span><br><span class="line">		x = fa[top[x]];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (dep[x] &gt; dep[y]) swap(x, y);</span><br><span class="line">	s = (s + query(id[x], id[y])) % p;</span><br><span class="line">	<span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>p3384树剖模板的完整代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span> + <span class="number">5</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">edge</span>&#123;</span><span class="keyword">int</span> nxt, to;&#125;e[<span class="number">200001</span>];</span><br><span class="line"><span class="keyword">int</span> head[N], cnt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v)</span></span>&#123;</span><br><span class="line">	e[++cnt].nxt = head[u];</span><br><span class="line">	e[cnt].to = v;</span><br><span class="line">	head[u] = cnt;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> son[N], size[N], dep[N], fa[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs1</span><span class="params">(<span class="keyword">int</span> now, <span class="keyword">int</span> Fa)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> v, Max = <span class="number">-1</span>;</span><br><span class="line">	size[now] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = head[now]; i; i = e[i].nxt)&#123;</span><br><span class="line">		v = e[i].to;</span><br><span class="line">		<span class="keyword">if</span> (v == Fa)<span class="keyword">continue</span>;</span><br><span class="line">		fa[v] = now;</span><br><span class="line">		dep[v] = dep[now] + <span class="number">1</span>;</span><br><span class="line">		dfs1(v, now);</span><br><span class="line">		size[now] += size[v];</span><br><span class="line">		<span class="keyword">if</span> (size[v] &gt; Max)</span><br><span class="line">			Max = size[v], son[now] = v;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> sum, top[N], id[N], input[N], bui[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs2</span><span class="params">(<span class="keyword">int</span> now, <span class="keyword">int</span> topnow)</span></span>&#123;</span><br><span class="line">	id[now] = ++sum;</span><br><span class="line">	bui[sum] = input[now];</span><br><span class="line">	top[now] = topnow;</span><br><span class="line">	<span class="keyword">if</span> (!son[now])<span class="keyword">return</span>;</span><br><span class="line">	dfs2(son[now], topnow);</span><br><span class="line">	<span class="keyword">int</span> v;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = head[now]; i; i = e[i].nxt)&#123;</span><br><span class="line">		v = e[i].to;</span><br><span class="line">		<span class="keyword">if</span> (!id[v])</span><br><span class="line">			dfs2(v, v);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n, p;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Seg_T</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> l, r, s, tag;</span><br><span class="line">&#125;t[N &lt;&lt; <span class="number">2</span>];</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ls(x) x &lt;&lt; 1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> rs(x) x &lt;&lt; 1 | 1</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> l = <span class="number">1</span>, <span class="keyword">int</span> r = n, <span class="keyword">int</span> now = <span class="number">1</span>)</span></span>&#123;</span><br><span class="line">	t[now].l = l, t[now].r = r;</span><br><span class="line">	<span class="keyword">if</span> (l == r)&#123;</span><br><span class="line">		t[now].s = bui[l] % p;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> mid = l + r &gt;&gt; <span class="number">1</span>;</span><br><span class="line">	build(l, mid, ls(now));</span><br><span class="line">	build(mid + <span class="number">1</span>, r, rs(now));</span><br><span class="line">	t[now].s = (t[ls(now)].s + t[rs(now)].s) % p;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushdown</span><span class="params">(<span class="keyword">int</span> now)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (!t[now].tag)<span class="keyword">return</span>;</span><br><span class="line">	t[ls(now)].tag = (t[ls(now)].tag + t[now].tag) % p;</span><br><span class="line">	t[rs(now)].tag = (t[rs(now)].tag + t[now].tag) % p;</span><br><span class="line">	t[ls(now)].s = (t[ls(now)].s + t[now].tag * (t[ls(now)].r - t[ls(now)].l + <span class="number">1</span>) % p) % p;</span><br><span class="line">	t[rs(now)].s = (t[rs(now)].s + t[now].tag * ((t[rs(now)].r - t[rs(now)].l + <span class="number">1</span>) % p) % p) % p;</span><br><span class="line">	t[now].tag = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k, <span class="keyword">int</span> now = <span class="number">1</span>)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (l &lt;= t[now].l &amp;&amp; t[now].r &lt;= r)&#123;</span><br><span class="line">		t[now].tag = (t[now].tag + k) % p;</span><br><span class="line">		t[now].s = (t[now].s + k * (t[now].r - t[now].l + <span class="number">1</span>) % p) % p;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	pushdown(now);</span><br><span class="line">	<span class="keyword">if</span> (t[ls(now)].r &gt;= l)update(l, r, k, ls(now));</span><br><span class="line">	<span class="keyword">if</span> (t[rs(now)].l &lt;= r)update(l, r, k, rs(now));</span><br><span class="line">	t[now].s = (t[ls(now)].s + t[rs(now)].s) % p;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> now = <span class="number">1</span>)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (l &lt;= t[now].l &amp;&amp; t[now].r &lt;= r)<span class="keyword">return</span> t[now].s;</span><br><span class="line">	<span class="keyword">int</span> s = <span class="number">0</span>;</span><br><span class="line">	pushdown(now);</span><br><span class="line">	<span class="keyword">if</span> (t[ls(now)].r &gt;= l)s = query(l, r, ls(now));</span><br><span class="line">	<span class="keyword">if</span> (t[rs(now)].l &lt;= r)s = (s + query(l, r, rs(now))) % p;</span><br><span class="line">	<span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update1</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(top[x] != top[y])&#123;</span><br><span class="line">		<span class="keyword">if</span> (dep[top[x]] &lt; dep[top[y]]) swap(x, y);</span><br><span class="line">		update(id[top[x]], id[x], z);</span><br><span class="line">		x = fa[top[x]];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (dep[x] &gt; dep[y])swap(x, y);</span><br><span class="line">	update(id[x], id[y], z);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query1</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> s = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(top[x] != top[y])&#123;</span><br><span class="line">		<span class="keyword">if</span> (dep[top[x]] &lt; dep[top[y]]) swap(x, y);</span><br><span class="line">		s = (s + query(id[top[x]], id[x])) % p;</span><br><span class="line">		x = fa[top[x]];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (dep[x] &gt; dep[y]) swap(x, y);</span><br><span class="line">	s = (s + query(id[x], id[y])) % p;</span><br><span class="line">	<span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update2</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	update(id[x], id[x] + size[x] - <span class="number">1</span>, z);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query2</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> query(id[x], id[x] + size[x] - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">(<span class="keyword">int</span> &amp;x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> f = <span class="number">1</span>;<span class="keyword">char</span> ch;</span><br><span class="line">	<span class="keyword">while</span>(ch = getchar(), ch &lt; <span class="string">'0'</span> || ch &gt; <span class="string">'9'</span>)<span class="keyword">if</span>(ch == <span class="string">'-'</span>)f = <span class="number">-1</span>;</span><br><span class="line">	x = ch - <span class="string">'0'</span>;</span><br><span class="line">	<span class="keyword">while</span>(ch = getchar(), ch &gt;= <span class="string">'0'</span> &amp;&amp; ch &lt;= <span class="string">'9'</span>)</span><br><span class="line">		x = x * <span class="number">10</span> + ch - <span class="string">'0'</span>;</span><br><span class="line">	x *= f;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> m, root;</span><br><span class="line">	read(n), read(m), read(root), read(p);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">		read(input[i]);</span><br><span class="line">	<span class="keyword">int</span> u, v;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++)&#123;</span><br><span class="line">		read(u), read(v);</span><br><span class="line">		add(u, v);</span><br><span class="line">		add(v, u);</span><br><span class="line">	&#125;</span><br><span class="line">	dep[root] = <span class="number">1</span>;</span><br><span class="line">	dfs1(root, <span class="number">0</span>);</span><br><span class="line">	dfs2(root, root);</span><br><span class="line">	build();</span><br><span class="line">	<span class="keyword">int</span> ch, x, y, z;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++)&#123;</span><br><span class="line">		read(ch);</span><br><span class="line">		<span class="keyword">switch</span>(ch)&#123;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">1</span>:read(x), read(y), read(z);update1(x, y, z);<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">2</span>:read(x), read(y);<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, query1(x, y));<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">3</span>:read(x), read(z);update2(x, z);<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">4</span>:read(x);<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, query2(x));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        Reward
+      </div>
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>Copyright： </strong>
+              Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+            </li>
+          </ul>
+        </div>
         
-        // PJAX 完成之后执行的函数，可以和上面的重载放在一起
-        document.addEventListener('pjax:complete', function () {
-            $(".section").css({opacity:1});
-            if(${hasGitalk}){
-                loadIssueData();
-            }
-            if(${isMath}){
-                loadMathJax();
-            }
-            loadMainJs(jQuery, window.moment, window.ClipboardJS, window.IcarusThemeSettings);
-            loadBackTop();
-            loadBusuanzi();
-        });`;
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
 
-        if (page.path != 'index.html'
-            || (comment == undefined || comment.type == undefined
-                || comment.type != 'gitalk'
-                || comment.has_hot_recommend == undefined
-                || !comment.has_hot_recommend)) {
-            hotRecommendStr = '';
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://roux-sq.github.io/2020/04/12/%E6%A0%91%E9%93%BE%E5%89%96%E5%88%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag">学习笔记</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: 'false',
+        verify: 'false',
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
         }
-        // =====
+    }
 
-        const language = page.lang || page.language || config.language;
-        const columnCount = Widgets.getColumnCount(config.widgets);
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
 
-        return <html lang={language ? language.substr(0, 2) : ''}>
-            <Head env={env} site={site} config={config} helper={helper} page={page} />
-            <body class={`is-${columnCount}-column has-navbar-fixed-top`}>
-                <Navbar config={config} helper={helper} page={page} />
-                <script type="text/javascript" src={my_cdn(url_for('/js/theme-setting.js'))}></script>
-                <section class="section">
-                    <div class="container">
-                        <div class="columns">
-                            <div class={classname({
-                                column: true,
-                                'order-2': true,
-                                'column-main': true,
-                                'is-12': columnCount === 1,
-                                'is-8-tablet is-8-desktop is-8-widescreen': columnCount === 2,
-                                'is-8-tablet is-8-desktop is-6-widescreen': (page.layout != 'post' && page.layout != 'page') && columnCount === 3,
-                                'is-8-tablet is-8-desktop is-9-widescreen': page.layout == 'page' || page.layout == 'post'
-                            })} dangerouslySetInnerHTML={{ __html: hotRecommendStr + body }}></div>
-                            <Widgets site={site} config={config} helper={helper} page={page} position={'left'} />
-                            {page.layout == 'page' || page.layout == 'post' ? null : <Widgets site={site} config={config} helper={helper} page={page} position={'right'} />}
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2015-2020
+        Shao Qing
+      </li>
+      <li>
+        
+        Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <span>
+  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+</span>
+        
+      </li>
+      
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="http://shenyu-vip.lofter.com" target="_blank" rel="noopener">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['面朝大海，春暖花开', '愿你一生努力，一生被爱', '想要的都拥有，得不到的都释怀'],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+  }
+
+</script>
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
                         </div>
                     </div>
-                </section>
-                <Footer config={config} helper={helper} />
-                <Scripts site={site} config={config} helper={helper} page={page} />
-                <Search config={config} helper={helper} />
-                {use_pjax ? <script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script> : null}
-                {use_pjax ? <script type="text/javascript" dangerouslySetInnerHTML={{ __html: pjaxJs }}></script> : null}
-            </body>
-        </html>;
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
     }
-};
+    viewer_init()
+</script>
+
+
+
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+
+
+    
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!--script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+
+</html>
