@@ -319,7 +319,7 @@
       
         
           
-            <h1 id="题解-CF1398D-【Colored-Rectangles】"><a href="#题解-CF1398D-【Colored-Rectangles】" class="headerlink" title="题解 CF1398D 【Colored Rectangles】"></a>题解 CF1398D 【Colored Rectangles】</h1><h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定三种颜色的棍子若干对，每次可以选取不同颜色的两对棍子组成一个矩形，最大化矩形的总面积。</p>
+            <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定三种颜色的棍子若干对，每次可以选取不同颜色的两对棍子组成一个矩形，最大化矩形的总面积。</p>
 <h2 id="operatorname-Sol"><a href="#operatorname-Sol" class="headerlink" title="$\operatorname{Sol}$"></a>$\operatorname{Sol}$</h2><p>首先我们发现这么一个结论：对于长的棍子，应当尽量与长的棍子配对组成矩形，可用排序不等式证明（$\text{同序和}\ge \text{乱序和}\ge \text{逆序和}$）。</p>
 <p>所以我们先把三种棍子分别按长度从大到小排序，再考虑 dp。</p>
 <p>设 $f(i,j,k)$ 表示选取 $i$ 对红棍子， $j$ 对绿棍子， $k$ 对蓝棍子的矩形总面积最大值，显然有转移方程：</p>
@@ -564,7 +564,7 @@
 
       
         
-          <h1 id="树链剖分学习笔记"><a href="#树链剖分学习笔记" class="headerlink" title="树链剖分学习笔记"></a>树链剖分学习笔记</h1><p>树链剖分是一种解决树上操作问题的有力工具，其本质思想是把树上问题转化为序列问题，再套用序列的数据结构（如线段树，树状数组）进行解决。<br>
+          <p>树链剖分是一种解决树上操作问题的有力工具，其本质思想是把树上问题转化为序列问题，再套用序列的数据结构（如线段树，树状数组）进行解决。<br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2020/04/12/%E6%A0%91%E9%93%BE%E5%89%96%E5%88%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#more" rel="contents">
