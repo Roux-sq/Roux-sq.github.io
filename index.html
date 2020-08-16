@@ -248,6 +248,130 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://Roux-sq.github.io/2020/08/16/%E9%A2%98%E8%A7%A3%20CF1398C%20%E3%80%90Good%20Subarrays%E3%80%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shao Qing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RouxQ's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/16/%E9%A2%98%E8%A7%A3%20CF1398C%20%E3%80%90Good%20Subarrays%E3%80%91/" itemprop="url">题解 CF1398D 【Colored Rectangles】</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-16T00:00:00+08:00">
+                2020-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定数组 $a$ 满足 $a_i\in \{0,1,…9\}$，求有多少个区间 $[l,r]$ 满足 $\sum_{i=l}^r=r-l+1$。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/08/16/%E9%A2%98%E8%A7%A3%20CF1398C%20%E3%80%90Good%20Subarrays%E3%80%91/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://Roux-sq.github.io/2020/08/15/%E9%A2%98%E8%A7%A3%20CF1398D%20%E3%80%90Colored%20Rectangles%E3%80%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -318,14 +442,14 @@
 
       
         
-          
-            <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定三种颜色的棍子若干对，每次可以选取不同颜色的两对棍子组成一个矩形，最大化矩形的总面积。</p>
-<h2 id="operatorname-Sol"><a href="#operatorname-Sol" class="headerlink" title="$\operatorname{Sol}$"></a>$\operatorname{Sol}$</h2><p>首先我们发现这么一个结论：对于长的棍子，应当尽量与长的棍子配对组成矩形，可用排序不等式证明（$\text{同序和}\ge \text{乱序和}\ge \text{逆序和}$）。</p>
-<p>所以我们先把三种棍子分别按长度从大到小排序，再考虑 dp。</p>
-<p>设 $f(i,j,k)$ 表示选取 $i$ 对红棍子， $j$ 对绿棍子， $k$ 对蓝棍子的矩形总面积最大值，显然有转移方程：</p>
-<script type="math/tex; mode=display">f(i,j,k)=\max\{f(i-1,j-1,k)+R_i \times G_j,f(i-1,j,k-1)+R_i\times B_k,f(i,j-1,k-1)+G_j\times B_k\}</script><p>最后答案为 $\max f(i,j,k)$。</p>
-<h2 id="operatorname-Code"><a href="#operatorname-Code" class="headerlink" title="$\operatorname{Code}$"></a>$\operatorname{Code}$</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> R[<span class="number">201</span>], G[<span class="number">201</span>], B[<span class="number">201</span>];</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> f[<span class="number">201</span>][<span class="number">201</span>][<span class="number">201</span>];</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">cmp</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>&#123;<span class="keyword">return</span> x &gt; y;&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> r, g, b;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; r &gt;&gt; g &gt;&gt; b;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= r; i++)<span class="built_in">cin</span> &gt;&gt; R[i];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= g; i++)<span class="built_in">cin</span> &gt;&gt; G[i];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= b; i++)<span class="built_in">cin</span> &gt;&gt; B[i];</span><br><span class="line">    sort(R + <span class="number">1</span>, R + <span class="number">1</span> + r, cmp); sort(G + <span class="number">1</span>, G + <span class="number">1</span> + g, cmp);</span><br><span class="line">    sort(B + <span class="number">1</span>, B + <span class="number">1</span> + b, cmp);</span><br><span class="line">    f[<span class="number">1</span>][<span class="number">1</span>][<span class="number">0</span>] = R[<span class="number">1</span>] * G[<span class="number">1</span>];</span><br><span class="line">    f[<span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>] = R[<span class="number">1</span>] * B[<span class="number">1</span>];</span><br><span class="line">    f[<span class="number">0</span>][<span class="number">1</span>][<span class="number">1</span>] = G[<span class="number">1</span>] * B[<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= r; i++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= g; j++)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt;= b; k++)&#123;</span><br><span class="line">                <span class="keyword">if</span> (i &amp;&amp; j)f[i][j][k] = max(f[i][j][k], f[i - <span class="number">1</span>][j - <span class="number">1</span>][k] + R[i] * G[j]);</span><br><span class="line">                <span class="keyword">if</span> (i &amp;&amp; k)f[i][j][k] = max(f[i][j][k], f[i - <span class="number">1</span>][j][k - <span class="number">1</span>] + R[i] * B[k]);</span><br><span class="line">                <span class="keyword">if</span> (j &amp;&amp; k)f[i][j][k] = max(f[i][j][k], f[i][j - <span class="number">1</span>][k - <span class="number">1</span>] + G[j] * B[k]);</span><br><span class="line">            &#125;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> Max = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= r; i++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= g; j++)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt;= b; k++)</span><br><span class="line">                Max = max(Max, f[i][j][k]);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; Max &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
+          <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定三种颜色的棍子若干对，每次可以选取不同颜色的两对棍子组成一个矩形，最大化矩形的总面积。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/08/15/%E9%A2%98%E8%A7%A3%20CF1398D%20%E3%80%90Colored%20Rectangles%E3%80%91/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -651,7 +775,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -664,7 +788,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

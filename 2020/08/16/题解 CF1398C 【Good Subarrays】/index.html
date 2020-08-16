@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="学习笔记,图论,tarjan," />
+  <meta name="keywords" content="题解,前缀和,桶," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="1.树枝边：指向未访问过节点的边2.前向边：指向dfs树中子树节点的边3.后向边：指向dfs树中父亲的边4.横叉边：剩下的别的边">
+<meta name="description" content="题意给定数组 $a$ 满足 $a_i\in \{0,1,…9\}$，求有多少个区间 $[l,r]$ 满足 $\sum_{i&#x3D;l}^r&#x3D;r-l+1$。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="强连通分量学习笔记">
-<meta property="og:url" content="http://roux-sq.github.io/2020/04/17/%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:title" content="题解 CF1398D 【Colored Rectangles】">
+<meta property="og:url" content="http://roux-sq.github.io/2020/08/16/%E9%A2%98%E8%A7%A3%20CF1398C%20%E3%80%90Good%20Subarrays%E3%80%91/index.html">
 <meta property="og:site_name" content="RouxQ&#39;s Blog">
-<meta property="og:description" content="1.树枝边：指向未访问过节点的边2.前向边：指向dfs树中子树节点的边3.后向边：指向dfs树中父亲的边4.横叉边：剩下的别的边">
-<meta property="article:published_time" content="2020-04-16T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-04-17T14:20:15.413Z">
+<meta property="og:description" content="题意给定数组 $a$ 满足 $a_i\in \{0,1,…9\}$，求有多少个区间 $[l,r]$ 满足 $\sum_{i&#x3D;l}^r&#x3D;r-l+1$。">
+<meta property="article:published_time" content="2020-08-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-08-16T07:40:45.705Z">
 <meta property="article:author" content="Shao Qing">
-<meta property="article:tag" content="学习笔记">
-<meta property="article:tag" content="图论">
-<meta property="article:tag" content="tarjan">
+<meta property="article:tag" content="题解">
+<meta property="article:tag" content="前缀和">
+<meta property="article:tag" content="桶">
 <meta name="twitter:card" content="summary">
 
 
@@ -121,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://Roux-sq.github.io/2020/04/17/强连通分量学习笔记/"/>
+  <link rel="canonical" href="http://Roux-sq.github.io/2020/08/16/题解 CF1398C 【Good Subarrays】/"/>
 
 
 
 
 
-  <title>强连通分量学习笔记 | RouxQ's Blog</title>
+  <title>题解 CF1398D 【Colored Rectangles】 | RouxQ's Blog</title>
   
 
 
@@ -254,7 +254,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://Roux-sq.github.io/2020/04/17/%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="http://Roux-sq.github.io/2020/08/16/%E9%A2%98%E8%A7%A3%20CF1398C%20%E3%80%90Good%20Subarrays%E3%80%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Shao Qing">
@@ -271,7 +271,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">强连通分量学习笔记</h1>
+          <h1 class="post-title" itemprop="name headline">题解 CF1398D 【Colored Rectangles】</h1>
         
 
         <div class="post-meta">
@@ -283,8 +283,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-17T00:00:00+08:00">
-                2020-04-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-16T00:00:00+08:00">
+                2020-08-16
               </time>
             
 
@@ -321,10 +321,11 @@
       
 
       
-        <blockquote>
-<p>1.树枝边：指向未访问过节点的边<br>2.前向边：指向dfs树中子树节点的边<br>3.后向边：指向dfs树中父亲的边<br>4.横叉边：剩下的别的边</p>
-</blockquote>
-
+        <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定数组 $a$ 满足 $a_i\in \{0,1,…9\}$，求有多少个区间 $[l,r]$ 满足 $\sum_{i=l}^r=r-l+1$。<br><a id="more"></a></p>
+<h2 id="operatorname-Sol"><a href="#operatorname-Sol" class="headerlink" title="$\operatorname{Sol}$"></a>$\operatorname{Sol}$</h2><p>考场上的奇怪想法qwq。</p>
+<p>把式子变形一下，变成</p>
+<script type="math/tex; mode=display">\sum_{i=l}^na_i+l-1=\sum_{i=r+1}^n+r</script><p>先枚举一下 $r$，把式子的右边丢进一个桶里。再开始枚举 $l$，为了保证区间合法，每次统计前先去除 $l-1$ 处的贡献，再统计答案，实现见代码。</p>
+<h2 id="operatorname-Code"><a href="#operatorname-Code" class="headerlink" title="$\operatorname{Code}$"></a>$\operatorname{Code}$</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> t[<span class="number">1000001</span>], a[<span class="number">100001</span>], pre[<span class="number">100001</span>];</span><br><span class="line"><span class="keyword">char</span> ch[<span class="number">100001</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> T;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;T);</span><br><span class="line">    <span class="keyword">while</span>(T--)&#123;</span><br><span class="line">        <span class="built_in">memset</span>(t, <span class="number">0</span>, <span class="keyword">sizeof</span>(t));<span class="comment">//多测清空桶</span></span><br><span class="line">        <span class="keyword">int</span> n;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;n);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%s"</span>, ch + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">            a[i] = ch[i] - <span class="string">'0'</span>;</span><br><span class="line">            pre[i] = pre[i - <span class="number">1</span>] + a[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= n; i++)</span><br><span class="line">            t[pre[n] - pre[i] + i]++;<span class="comment">//先把右边的式子丢进桶里</span></span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">            t[pre[n] - pre[i - <span class="number">1</span>] + i - <span class="number">1</span>]--;<span class="comment">//去除不合法的贡献</span></span><br><span class="line">            ans += t[pre[n] - pre[i - <span class="number">1</span>] + i - <span class="number">1</span>];<span class="comment">//统计答案</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>, ans);<span class="comment">//记得开long long</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -341,11 +342,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"><i class="fa fa-tag"></i> 学习笔记</a>
+            <a href="/tags/%E9%A2%98%E8%A7%A3/" rel="tag"><i class="fa fa-tag"></i> 题解</a>
           
-            <a href="/tags/%E5%9B%BE%E8%AE%BA/" rel="tag"><i class="fa fa-tag"></i> 图论</a>
+            <a href="/tags/%E5%89%8D%E7%BC%80%E5%92%8C/" rel="tag"><i class="fa fa-tag"></i> 前缀和</a>
           
-            <a href="/tags/tarjan/" rel="tag"><i class="fa fa-tag"></i> tarjan</a>
+            <a href="/tags/%E6%A1%B6/" rel="tag"><i class="fa fa-tag"></i> 桶</a>
           
         </div>
       
@@ -358,8 +359,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/12/%E6%A0%91%E9%93%BE%E5%89%96%E5%88%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="树链剖分学习笔记">
-                <i class="fa fa-chevron-left"></i> 树链剖分学习笔记
+              <a href="/2020/08/15/%E9%A2%98%E8%A7%A3%20CF1398D%20%E3%80%90Colored%20Rectangles%E3%80%91/" rel="next" title="题解 CF1398D 【Colored Rectangles】">
+                <i class="fa fa-chevron-left"></i> 题解 CF1398D 【Colored Rectangles】
               </a>
             
           </div>
@@ -367,10 +368,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/08/15/%E9%A2%98%E8%A7%A3%20CF1398D%20%E3%80%90Colored%20Rectangles%E3%80%91/" rel="prev" title="题解 CF1398D 【Colored Rectangles】">
-                题解 CF1398D 【Colored Rectangles】 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -422,8 +419,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -474,6 +480,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#题意"><span class="nav-number">1.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#operatorname-Sol"><span class="nav-number">2.</span> <span class="nav-text">$\operatorname{Sol}$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#operatorname-Code"><span class="nav-number">3.</span> <span class="nav-text">$\operatorname{Code}$</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
