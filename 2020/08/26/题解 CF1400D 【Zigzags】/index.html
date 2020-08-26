@@ -79,14 +79,14 @@
 
 
 
-<meta name="description" content="考场上想到做法没调出来，自闭了。 题意给定长度为 $n$ 的数组 $a$，询问有多少组 $(i,j,k,l)$ 满足：  $1\le i&lt;j&lt;k&lt;l\le n$ $a_i&#x3D;a_k$ 且 $a_j&#x3D;a_l$  $n\le 3000$ $\operatorname{Sol}$先看到这个数据范围，显然暗示着我们去寻找 $\Theta(n^2)$ 的做法，再不难猜测，做法应当是枚举四元组">
+<meta name="description" content="考场上想到做法没调出来，自闭了。 题意给定长度为 $n$ 的数组 $a$，询问有多少组 $(i,j,k,l)$ 满足：  $1\le i&lt;j&lt;k&lt;l\le n$ $a_i&#x3D;a_k$ 且 $a_j&#x3D;a_l$  $n\le 3000$">
 <meta property="og:type" content="article">
 <meta property="og:title" content="题解 CF1400D 【Zigzags】">
 <meta property="og:url" content="http://roux-sq.github.io/2020/08/26/%E9%A2%98%E8%A7%A3%20CF1400D%20%E3%80%90Zigzags%E3%80%91/index.html">
 <meta property="og:site_name" content="RouxQ&#39;s Blog">
-<meta property="og:description" content="考场上想到做法没调出来，自闭了。 题意给定长度为 $n$ 的数组 $a$，询问有多少组 $(i,j,k,l)$ 满足：  $1\le i&lt;j&lt;k&lt;l\le n$ $a_i&#x3D;a_k$ 且 $a_j&#x3D;a_l$  $n\le 3000$ $\operatorname{Sol}$先看到这个数据范围，显然暗示着我们去寻找 $\Theta(n^2)$ 的做法，再不难猜测，做法应当是枚举四元组">
+<meta property="og:description" content="考场上想到做法没调出来，自闭了。 题意给定长度为 $n$ 的数组 $a$，询问有多少组 $(i,j,k,l)$ 满足：  $1\le i&lt;j&lt;k&lt;l\le n$ $a_i&#x3D;a_k$ 且 $a_j&#x3D;a_l$  $n\le 3000$">
 <meta property="article:published_time" content="2020-08-25T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-08-26T00:50:26.169Z">
+<meta property="article:modified_time" content="2020-08-26T01:17:48.854Z">
 <meta property="article:author" content="Shao Qing">
 <meta property="article:tag" content="题解">
 <meta property="article:tag" content="桶">
@@ -326,7 +326,7 @@
 <li>$1\le i&lt;j&lt;k&lt;l\le n$</li>
 <li>$a_i=a_k$ 且 $a_j=a_l$</li>
 </ul>
-<p>$n\le 3000$</p>
+<p>$n\le 3000$<br><a id="more"></a></p>
 <h2 id="operatorname-Sol"><a href="#operatorname-Sol" class="headerlink" title="$\operatorname{Sol}$"></a>$\operatorname{Sol}$</h2><p>先看到这个数据范围，显然暗示着我们去寻找 $\Theta(n^2)$ 的做法，再不难猜测，做法应当是枚举四元组中的两个，再 $\Theta(1)$ 计算贡献。如果我们枚举 $i,j$，我们会发现很难处理 $k$ 和 $l$ 的相对位置关系，所以做法应当是枚举 $i,k$，这样 $j\in (i,k),l\in(k,n]$，达到了我们的预期。</p>
 <p>我们在枚举 $i,k$ 的同时对 $(i,k)$ 区间和 $(k,n]$ 区间维护两个桶 $t1,t2$，显然此处的贡献为 $\sum t1_i\times t2_i$，如果在转移的同时更新桶，再计算贡献，发现这样做是 $\Theta (n^3)$ 的，考虑优化。可以发现，在转移过程中，一次 $k$ 的移动只会造成两个桶中分别一个元素的变化，也就是说，在计算贡献的 $\sum$ 中，<strong>一次转移最多伴随着两项值的变化</strong>，让总贡献直接更新即可。</p>
 <p>时间复杂度 $\Theta(Tn^2)$。</p>

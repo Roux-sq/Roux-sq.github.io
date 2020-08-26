@@ -318,19 +318,20 @@
 
       
         
-          
-            <p>考场上想到做法没调出来，自闭了。</p>
+          <p>考场上想到做法没调出来，自闭了。</p>
 <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定长度为 $n$ 的数组 $a$，询问有多少组 $(i,j,k,l)$ 满足：</p>
 <ul>
 <li>$1\le i&lt;j&lt;k&lt;l\le n$</li>
 <li>$a_i=a_k$ 且 $a_j=a_l$</li>
 </ul>
-<p>$n\le 3000$</p>
-<h2 id="operatorname-Sol"><a href="#operatorname-Sol" class="headerlink" title="$\operatorname{Sol}$"></a>$\operatorname{Sol}$</h2><p>先看到这个数据范围，显然暗示着我们去寻找 $\Theta(n^2)$ 的做法，再不难猜测，做法应当是枚举四元组中的两个，再 $\Theta(1)$ 计算贡献。如果我们枚举 $i,j$，我们会发现很难处理 $k$ 和 $l$ 的相对位置关系，所以做法应当是枚举 $i,k$，这样 $j\in (i,k),l\in(k,n]$，达到了我们的预期。</p>
-<p>我们在枚举 $i,k$ 的同时对 $(i,k)$ 区间和 $(k,n]$ 区间维护两个桶 $t1,t2$，显然此处的贡献为 $\sum t1_i\times t2_i$，如果在转移的同时更新桶，再计算贡献，发现这样做是 $\Theta (n^3)$ 的，考虑优化。可以发现，在转移过程中，一次 $k$ 的移动只会造成两个桶中分别一个元素的变化，也就是说，在计算贡献的 $\sum$ 中，<strong>一次转移最多伴随着两项值的变化</strong>，让总贡献直接更新即可。</p>
-<p>时间复杂度 $\Theta(Tn^2)$。</p>
-<h2 id="operatorname-Code"><a href="#operatorname-Code" class="headerlink" title="$\operatorname{Code}$"></a>$\operatorname{Code}$</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> a[<span class="number">3001</span>], t1[<span class="number">3001</span>], t2[<span class="number">3001</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> T;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; T;</span><br><span class="line">    <span class="keyword">while</span>(T--)&#123;</span><br><span class="line">        <span class="keyword">int</span> n;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)<span class="built_in">cin</span> &gt;&gt; a[i];</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">            <span class="built_in">memset</span>(t1, <span class="number">0</span>, <span class="keyword">sizeof</span>(t1));</span><br><span class="line">            <span class="built_in">memset</span>(t2, <span class="number">0</span>, <span class="keyword">sizeof</span>(t2));</span><br><span class="line">            <span class="keyword">long</span> <span class="keyword">long</span> tmp = <span class="number">0</span>;<span class="comment">//贡献</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt;= n; j++)t2[a[j]]++;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; n; j++)&#123;</span><br><span class="line">                </span><br><span class="line">                tmp -= t1[a[j]], t2[a[j]]--;<span class="comment">//此处贡献变为t1[a[j]] * (t2[a[j]] - 1)</span></span><br><span class="line">                <span class="keyword">if</span> (a[i] == a[j])ans += tmp;</span><br><span class="line">                tmp += t2[a[j]], t1[a[j]]++;<span class="comment">//注意此处加上的贡献在下一个循环才是合法的</span></span><br><span class="line">                                            <span class="comment">//所以在计算对答案的贡献之后再更新</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
+<p>$n\le 3000$<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/08/26/%E9%A2%98%E8%A7%A3%20CF1400D%20%E3%80%90Zigzags%E3%80%91/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
