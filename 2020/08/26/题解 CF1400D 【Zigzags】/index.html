@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="题解,桶," />
 
 
 
@@ -79,11 +79,17 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="RouxQ&#39;s Blog">
-<meta property="og:url" content="http://roux-sq.github.io/index.html">
+<meta name="description" content="考场上想到做法没调出来，自闭了。 题意给定长度为 $n$ 的数组 $a$，询问有多少组 $(i,j,k,l)$ 满足：  $1\le i&lt;j&lt;k&lt;l\le n$ $a_i&#x3D;a_k$ 且 $a_j&#x3D;a_l$  $n\le 3000$ $\operatorname{Sol}$先看到这个数据范围，显然暗示着我们去寻找 $\Theta(n^2)$ 的做法，再不难猜测，做法应当是枚举四元组">
+<meta property="og:type" content="article">
+<meta property="og:title" content="题解 CF1400D 【Zigzags】">
+<meta property="og:url" content="http://roux-sq.github.io/2020/08/26/%E9%A2%98%E8%A7%A3%20CF1400D%20%E3%80%90Zigzags%E3%80%91/index.html">
 <meta property="og:site_name" content="RouxQ&#39;s Blog">
+<meta property="og:description" content="考场上想到做法没调出来，自闭了。 题意给定长度为 $n$ 的数组 $a$，询问有多少组 $(i,j,k,l)$ 满足：  $1\le i&lt;j&lt;k&lt;l\le n$ $a_i&#x3D;a_k$ 且 $a_j&#x3D;a_l$  $n\le 3000$ $\operatorname{Sol}$先看到这个数据范围，显然暗示着我们去寻找 $\Theta(n^2)$ 的做法，再不难猜测，做法应当是枚举四元组">
+<meta property="article:published_time" content="2020-08-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-08-26T00:50:26.169Z">
 <meta property="article:author" content="Shao Qing">
+<meta property="article:tag" content="题解">
+<meta property="article:tag" content="桶">
 <meta name="twitter:card" content="summary">
 
 
@@ -114,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://Roux-sq.github.io/"/>
+  <link rel="canonical" href="http://Roux-sq.github.io/2020/08/26/题解 CF1400D 【Zigzags】/"/>
 
 
 
 
 
-  <title>RouxQ's Blog</title>
+  <title>题解 CF1400D 【Zigzags】 | RouxQ's Blog</title>
   
 
 
@@ -139,8 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -233,9 +238,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -265,9 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/08/26/%E9%A2%98%E8%A7%A3%20CF1400D%20%E3%80%90Zigzags%E3%80%91/" itemprop="url">题解 CF1400D 【Zigzags】</a></h1>
+          <h1 class="post-title" itemprop="name headline">题解 CF1400D 【Zigzags】</h1>
         
 
         <div class="post-meta">
@@ -317,9 +320,7 @@
       
 
       
-        
-          
-            <p>考场上想到做法没调出来，自闭了。</p>
+        <p>考场上想到做法没调出来，自闭了。</p>
 <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定长度为 $n$ 的数组 $a$，询问有多少组 $(i,j,k,l)$ 满足：</p>
 <ul>
 <li>$1\le i&lt;j&lt;k&lt;l\le n$</li>
@@ -330,8 +331,6 @@
 <p>我们在枚举 $i,k$ 的同时对 $(i,k)$ 区间和 $(k,n]$ 区间维护两个桶 $t1,t2$，显然此处的贡献为 $\sum t1_i\times t2_i$，如果在转移的同时更新桶，再计算贡献，发现这样做是 $\Theta (n^3)$ 的，考虑优化。可以发现，在转移过程中，一次 $k$ 的移动只会造成两个桶中分别一个元素的变化，也就是说，在计算贡献的 $\sum$ 中，<strong>一次转移最多伴随着两项值的变化</strong>，让总贡献直接更新即可。</p>
 <p>时间复杂度 $\Theta(Tn^2)$。</p>
 <h2 id="operatorname-Code"><a href="#operatorname-Code" class="headerlink" title="$\operatorname{Code}$"></a>$\operatorname{Code}$</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> a[<span class="number">3001</span>], t1[<span class="number">3001</span>], t2[<span class="number">3001</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> T;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; T;</span><br><span class="line">    <span class="keyword">while</span>(T--)&#123;</span><br><span class="line">        <span class="keyword">int</span> n;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)<span class="built_in">cin</span> &gt;&gt; a[i];</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">            <span class="built_in">memset</span>(t1, <span class="number">0</span>, <span class="keyword">sizeof</span>(t1));</span><br><span class="line">            <span class="built_in">memset</span>(t2, <span class="number">0</span>, <span class="keyword">sizeof</span>(t2));</span><br><span class="line">            <span class="keyword">long</span> <span class="keyword">long</span> tmp = <span class="number">0</span>;<span class="comment">//贡献</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt;= n; j++)t2[a[j]]++;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; n; j++)&#123;</span><br><span class="line">                </span><br><span class="line">                tmp -= t1[a[j]], t2[a[j]]--;<span class="comment">//此处贡献变为t1[a[j]] * (t2[a[j]] - 1)</span></span><br><span class="line">                <span class="keyword">if</span> (a[i] == a[j])ans += tmp;</span><br><span class="line">                tmp += t2[a[j]], t1[a[j]]++;<span class="comment">//注意此处加上的贡献在下一个循环才是合法的</span></span><br><span class="line">                                            <span class="comment">//所以在计算对答案的贡献之后再更新</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
       
     </div>
     
@@ -346,384 +345,38 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://Roux-sq.github.io/2020/08/16/%E9%A2%98%E8%A7%A3%20CF1398C%20%E3%80%90Good%20Subarrays%E3%80%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Shao Qing">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RouxQ's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/08/16/%E9%A2%98%E8%A7%A3%20CF1398C%20%E3%80%90Good%20Subarrays%E3%80%91/" itemprop="url">题解 CF1398D 【Colored Rectangles】</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-16T00:00:00+08:00">
-                2020-08-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/%E9%A2%98%E8%A7%A3/" rel="tag"><i class="fa fa-tag"></i> 题解</a>
           
-            
+            <a href="/tags/%E6%A1%B6/" rel="tag"><i class="fa fa-tag"></i> 桶</a>
           
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
       
-        
-          <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定数组 $a$ 满足 $a_i\in \{0,1,…9\}$，求有多少个区间 $[l,r]$ 满足 $\sum_{i=l}^r=r-l+1$。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/08/16/%E9%A2%98%E8%A7%A3%20CF1398C%20%E3%80%90Good%20Subarrays%E3%80%91/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/16/%E9%A2%98%E8%A7%A3%20CF1398C%20%E3%80%90Good%20Subarrays%E3%80%91/" rel="next" title="题解 CF1398D 【Colored Rectangles】">
+                <i class="fa fa-chevron-left"></i> 题解 CF1398D 【Colored Rectangles】
+              </a>
+            
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
 
-    
+          <span class="post-nav-divider"></span>
 
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://Roux-sq.github.io/2020/08/15/%E9%A2%98%E8%A7%A3%20CF1398D%20%E3%80%90Colored%20Rectangles%E3%80%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Shao Qing">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RouxQ's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/08/15/%E9%A2%98%E8%A7%A3%20CF1398D%20%E3%80%90Colored%20Rectangles%E3%80%91/" itemprop="url">题解 CF1398D 【Colored Rectangles】</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+          <div class="post-nav-prev post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-15T00:00:00+08:00">
-                2020-08-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定三种颜色的棍子若干对，每次可以选取不同颜色的两对棍子组成一个矩形，最大化矩形的总面积。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/08/15/%E9%A2%98%E8%A7%A3%20CF1398D%20%E3%80%90Colored%20Rectangles%E3%80%91/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://Roux-sq.github.io/2020/04/17/%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Shao Qing">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RouxQ's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/04/17/%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">强连通分量学习笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-17T00:00:00+08:00">
-                2020-04-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <blockquote>
-<p>1.树枝边：指向未访问过节点的边<br>2.前向边：指向dfs树中子树节点的边<br>3.后向边：指向dfs树中父亲的边<br>4.横叉边：剩下的别的边</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -733,134 +386,11 @@
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://Roux-sq.github.io/2020/04/12/%E6%A0%91%E9%93%BE%E5%89%96%E5%88%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Shao Qing">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RouxQ's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/04/12/%E6%A0%91%E9%93%BE%E5%89%96%E5%88%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">树链剖分学习笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-12T00:00:00+08:00">
-                2020-04-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>树链剖分是一种解决树上操作问题的有力工具，其本质思想是把树上问题转化为序列问题，再套用序列的数据结构（如线段树，树状数组）进行解决。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/04/12/%E6%A0%91%E9%93%BE%E5%89%96%E5%88%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+    <div class="post-spread">
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
-
-  
 
 
           </div>
@@ -868,6 +398,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -888,8 +422,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -940,6 +483,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#题意"><span class="nav-number">1.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#operatorname-Sol"><span class="nav-number">2.</span> <span class="nav-text">$\operatorname{Sol}$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#operatorname-Code"><span class="nav-number">3.</span> <span class="nav-text">$\operatorname{Code}$</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1080,6 +639,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
